@@ -1,2 +1,3 @@
-saxpy
-saxpy_input_sender
+./c/saxpy
+./c/saxpy_input_sender
+./python/saxpy
