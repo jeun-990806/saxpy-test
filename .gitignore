@@ -1,3 +1,4 @@
 ./c/saxpy
 ./c/saxpy_input_sender
+./c/saxpy_input_receiver
 ./python/saxpy
