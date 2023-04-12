@@ -16,11 +16,9 @@ int main(int argc, char *argv[]){
 	int server_sock, client_sock;
 	struct sockaddr_in server_addr, client_addr;
 	socklen_t client_addr_size;
+
 	int n; float a;
 	float *x, *y;
-
-	clock_t start, end, tmp;
-	int read_bytes, write_bytes;
 
 	server_sock = socket(PF_INET, SOCK_STREAM, 0);
 	memset(&server_addr, 0, sizeof(server_addr));
@@ -36,26 +34,23 @@ int main(int argc, char *argv[]){
 	y = (float *)malloc(sizeof(float));
 	
 	while(1){
-		read_bytes = 0; write_bytes = 0;
 		client_sock = accept(server_sock, (struct sockaddr *)&client_addr, &client_addr_size);
-		read_bytes += recv(client_sock, (void *)&n, sizeof(int), MSG_WAITALL);
+		printf("Connection request from %s\n" ntohl(client_addr.sin_addr.s_addr);
+
+		recv(client_sock, (void *)&n, sizeof(int), MSG_WAITALL);
 		if(n == -1) break;
-		read_bytes += recv(client_sock, (void *)&a, sizeof(float), MSG_WAITALL);
+		recv(client_sock, (void *)&a, sizeof(float), MSG_WAITALL);
 		x = realloc(x, sizeof(float)*n);
 		y = realloc(y, sizeof(float)*n);
-
-		read_bytes += recv(client_sock, x, sizeof(float)*n, MSG_WAITALL);
-		read_bytes += recv(client_sock, y, sizeof(float)*n, MSG_WAITALL);
-	
+		recv(client_sock, x, sizeof(float)*n, MSG_WAITALL);
+		recv(client_sock, y, sizeof(float)*n, MSG_WAITALL);
 		printf("Received data: n=%d, a=%f, x[]={%f, ..., %f}, y[]={%f, ..., %f} (Total: %dBytes)\n", n, a, x[0], x[n-1], y[0], y[n-1], read_bytes);
 		
 		saxpy(n, a, x, y);
-
 		printf("saxpy() result: y[]={%f, ..., %f}\n", y[0], y[n-1]);
 
-		write_bytes = send(client_sock, y, sizeof(float)*n, 0);
-		printf("Send %dBytes\n", write_bytes);
-		close(client_sock);
+		send(client_sock, y, sizeof(float)*n, 0);
+		if(close(client_sock) == 0) printf("Result reception is done. Disconnect.\n");
 	}
 	close(server_sock);
 	return 0;
