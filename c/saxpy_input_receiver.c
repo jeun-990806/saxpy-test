@@ -6,6 +6,7 @@
 #include <sys/socket.h>
 #include <time.h>
 #include "tools.h"
+#include "UDP.h"
 
 #define TCP 0
 #define UDP 1
@@ -65,15 +66,14 @@ int main(int argc, char *argv[]){
 			recv(client_sock, x, sizeof(float)*n, MSG_WAITALL);
 			recv(client_sock, y, sizeof(float)*n, MSG_WAITALL);
 		}else if(protocol == UDP){
-			printf("Im waiting!\n");
 			recvfrom(server_sock, (void *)&n, sizeof(int), MSG_WAITALL, (struct sockaddr *)&client_addr, &client_addr_size);
 			if(n == -1) break;
 			recvfrom(server_sock, (void *)&a, sizeof(float), MSG_WAITALL, (struct sockaddr *)&client_addr, &client_addr_size);
 			
 			x = realloc(x, sizeof(float)*n);
 			y = realloc(y, sizeof(float)*n);
-			recvfrom(server_sock, x, sizeof(float)*n, MSG_WAITALL, (struct sockaddr *)&client_addr, &client_addr_size);
-			recvfrom(server_sock, y, sizeof(float)*n, MSG_WAITALL, (struct sockaddr *)&client_addr, &client_addr_size);
+			recvall(server_sock, x, n, sizeof(float), (struct sockaddr *)&client_addr, &client_addr_size);
+			recvall(server_sock, y, n, sizeof(float), (struct sockaddr *)&client_addr, &client_addr_size);
 		}
 		printf("Received data: n=%d, a=%f, x[]={%f, ..., %f}, y[]={%f, ..., %f}\n", n, a, x[0], x[n-1], y[0], y[n-1]);
 		
@@ -85,7 +85,7 @@ int main(int argc, char *argv[]){
 			if(close(client_sock) == 0)
 				printf("Result transmission is done. Disconnect.\n");
 		}else if(protocol == UDP){
-			sendto(server_sock, y, sizeof(float)*n, 0, (struct sockaddr *)&client_addr, client_addr_size);
+			sendall(server_sock, y, n, sizeof(float), (struct sockaddr *)&client_addr, client_addr_size);
 			printf("Result transmission is done.\n");
 		}
 	}
