@@ -6,7 +6,7 @@ ssize_t sendall(int socket, void *buffer, size_t length, size_t element_size, st
 	int offset = 0;
 
 	while(1){
-		send_bytes = sendto(socket, buffer+offset, length*element_size, 0, address, address_len);
+		send_bytes = sendto(socket, buffer+offset, (length-offset)*element_size, 0, address, address_len);
 
 		if(send_bytes == -1) return -1;
 		if(send_bytes + total >= length*element_size) return send_bytes + total;
@@ -20,7 +20,7 @@ ssize_t recvall(int socket, void *buffer, size_t length, size_t element_size, st
 	int offset = 0;
 	
 	while(1){
-		recv_bytes = recvfrom(socket, buffer+offset, length*element_size, 0, address, address_len);
+		recv_bytes = recvfrom(socket, buffer+offset, (length-offset)*element_size, 0, address, address_len);
 		if(recv_bytes == -1) return -1;
 		if(recv_bytes + total >= length*element_size) return recv_bytes + total;
 		total += recv_bytes;
