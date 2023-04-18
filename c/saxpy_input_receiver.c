@@ -27,6 +27,11 @@ int main(int argc, char *argv[]){
 
 	int protocol = TCP;
 
+	if(argv < 3){
+		printf("Usage: ./saxpy_input_receiver post protocol(TCP/UDP)\n");
+		exit(1);
+	}
+
 	if(strcmp(argv[2], "UDP") == 0) protocol = UDP;
 
 	if(protocol == TCP) server_sock = socket(PF_INET, SOCK_STREAM, 0);

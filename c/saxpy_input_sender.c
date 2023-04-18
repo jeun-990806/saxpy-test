@@ -35,7 +35,7 @@ int main(int argc, char *argv[]){
 	int protocol = TCP;
 	
 	if(argc < 6){
-		printf("Usage: ./saxpy_input_sender host_ip, port, n, a, number_of_executions [optional: TCP/UDP, default is TCP]\n");
+		printf("Usage: ./saxpy_input_sender host_ip, port, n, a, number_of_executions protocol(TCP/UDP)\n");
 		exit(1);
 	}
 
